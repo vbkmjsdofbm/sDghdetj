@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>测一测，你的天赋藏在哪个方向</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%232F4E7A'/><g fill='%23F7F5EE'><path d='M16 25l-1.4-1.3C8.9 18.3 6 15.6 6 12.3 6 9.5 8.2 7.5 10.7 7.5c1.5 0 2.9.7 3.9 1.8.9-1.1 2.3-1.8 3.8-1.8 2.5 0 4.7 2 4.7 4.8 0 3.3-2.9 6-8.6 11.4z'/></g></svg>">
+<style>
+:root{
+  --paper:#E8E4D8;
+  --sheet:#F7F5EE;
+  --ink:#1E2118;
+  --ink-2:#5B5D53;
+  --line:#CFCBBA;
+  --accent:#2F4E7A;
+  --accent-2:#1C3355;
+  --yellow:#F2C64D;
+  --serif:"Songti SC","SimSun","宋体",Georgia,serif;
+  --hei:"PingFang SC","Microsoft YaHei","Hiragino Sans GB","Heiti SC",sans-serif;
+  --kai:"Kaiti SC","KaiTi","STKaiti","楷体",serif;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;padding:16px 12px 44px;color:var(--ink);
+  font-family:var(--hei);font-size:15px;line-height:1.7;
+  background-color:var(--paper);
+  background-image:radial-gradient(circle at 14% -6%,#F4F1E7 0%,rgba(244,241,231,0) 58%),radial-gradient(circle at 86% 104%,#DFDACB 0%,rgba(223,218,203,0) 62%);
+  background-attachment:fixed;
+  -webkit-font-smoothing:antialiased;
+}
+.sheet{
+  position:relative;max-width:720px;margin:0 auto;background:var(--sheet);
+  border:1px solid var(--line);padding:22px 18px 28px;
+  box-shadow:inset 0 1px 0 #fff, 0 22px 48px -30px rgba(30,33,24,.55);
+}
+.sheet::after{
+  content:"";position:absolute;inset:0;pointer-events:none;opacity:.03;
+  background-image:radial-gradient(#1E2118 0.5px, transparent 0.5px);
+  background-size:3px 3px;
+}
+.seal{display:none}
+.screen{display:none}
+.screen.is-on{display:block;animation:rise .34s ease both}
+@keyframes rise{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){
+  .screen.is-on{animation:none}
+  *{transition:none !important}
+}
+
+/* 抬头 */
+.meta{
+  display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;
+  font-family:var(--kai);font-size:12.5px;color:var(--ink-2);
+  padding-bottom:9px;border-bottom:1px solid var(--line);
+}
+.fields{display:flex;gap:14px;flex-wrap:wrap;margin-top:9px;font-family:var(--kai);font-size:12.5px;color:var(--ink-2)}
+.field{display:flex;align-items:flex-end;gap:6px}
+.blank{display:inline-block;width:56px;height:15px;border-bottom:1px dotted #B6B2A1}
+
+h1{
+  font-family:var(--serif);font-weight:700;font-size:clamp(27px,7.6vw,50px);
+  line-height:1.26;letter-spacing:-.02em;margin:18px 0 0;
+}
+.mark{background:linear-gradient(180deg,transparent 60%,var(--yellow) 60%,rgba(242,198,77,.85) 94%,transparent 94%);padding:0 3px}
+.sub{font-family:var(--kai);font-size:15px;color:var(--ink-2);margin:14px 0 0;letter-spacing:.02em}
+.sub::before{content:"";display:inline-block;width:16px;height:1px;background:var(--accent);vertical-align:middle;margin-right:8px}
+
+/* 卖点 */
+.sell{display:grid;grid-template-columns:1fr;gap:9px;margin:24px 0 26px}
+@media(min-width:560px){.sell{grid-template-columns:1fr 1fr}}
+.card{
+  display:flex;gap:10px;align-items:flex-start;
+  padding:11px 12px;background:#FBFAF4;border:1px solid var(--line);
+}
+.card svg{flex:0 0 24px;width:24px;height:24px;margin-top:2px}
+.card svg circle{fill:none;stroke:var(--line);stroke-width:1.4}
+.card svg path{fill:none;stroke:var(--accent);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.card p{margin:0;font-size:14px;line-height:1.6}
+.card b{font-weight:600;letter-spacing:.03em}
+.card .sep{color:#B0AC9B;margin:0 1px}
+
+/* 按钮 */
+.btn-primary{
+  display:block;width:100%;border:0;border-radius:2px;cursor:pointer;
+  background:var(--accent);color:#fff;font-family:var(--hei);font-size:17px;font-weight:600;
+  letter-spacing:.1em;padding:15px 18px;
+  box-shadow:4px 4px 0 0 var(--ink);
+  transition:transform .12s ease, box-shadow .12s ease, background .12s ease;
+}
+.btn-primary:hover{background:#3A5E90}
+.btn-primary:active{transform:translate(3px,3px);box-shadow:1px 1px 0 0 var(--ink)}
+.btn-ghost{
+  display:inline-block;border:1px solid var(--ink);background:transparent;border-radius:2px;cursor:pointer;
+  color:var(--ink);font-family:var(--hei);font-size:14px;padding:11px 18px;min-height:44px;
+  transition:background .12s ease;
+}
+.btn-ghost:hover{background:#EFEBDE}
+.btn-ghost:disabled{opacity:.35;cursor:default}
+.tiny{font-family:var(--kai);font-size:12.5px;color:var(--ink-2);margin:16px 0 0;text-align:center;letter-spacing:.04em;line-height:1.8}
+
+/* 答题 */
+.quiz-top{display:flex;align-items:center;justify-content:space-between;gap:14px;padding-bottom:11px;border-bottom:1px solid var(--line)}
+.qmeta{font-family:var(--serif);font-size:13px;color:var(--accent);letter-spacing:.1em;white-space:nowrap}
+.dots{display:grid;grid-template-columns:repeat(16,1fr);gap:3px;flex:1;max-width:240px}
+.dot{aspect-ratio:1;border:1px solid #C6C2B1;background:transparent}
+.dot.on{background:var(--accent);border-color:var(--accent)}
+.dot.cur{border-color:var(--ink);border-width:2px}
+.bar-line{height:2px;background:var(--line);margin:10px 0 20px}
+.bar-line i{display:block;height:100%;width:0;background:var(--accent);transition:width .3s ease}
+.qnum{font-family:var(--kai);font-size:12.5px;color:var(--ink-2);letter-spacing:.12em;margin:0}
+.stem{
+  font-family:var(--serif);font-weight:600;font-size:clamp(19px,5.2vw,26px);
+  line-height:1.5;letter-spacing:-.01em;margin:10px 0 20px;
+}
+.opts{display:flex;flex-direction:column;gap:8px}
+.opt{
+  display:flex;gap:12px;align-items:center;width:100%;min-height:58px;
+  padding:13px 13px;text-align:left;cursor:pointer;
+  background:#FBFAF4;border:1px solid var(--line);border-radius:2px;
+  font-family:var(--serif);font-size:15px;line-height:1.55;color:var(--ink);
+  transition:background .14s ease,border-color .14s ease;
+}
+.opt:hover{border-color:#9C9A88;background:#FFFDF6}
+.opt .key{
+  flex:0 0 28px;width:28px;height:28px;display:grid;place-items:center;
+  border:1px solid #9C9A88;border-radius:50%;
+  font-family:var(--hei);font-size:12px;font-weight:700;color:var(--ink-2);
+  transition:background .14s ease,color .14s ease,border-color .14s ease;
+}
+.opt.sel{border-color:var(--accent);background:#ECF0F6}
+.opt.sel .key{background:var(--accent);border-color:var(--accent);color:#fff}
+.nav{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:22px}
+.hint{font-family:var(--kai);font-size:12.5px;color:var(--ink-2)}
+
+/* 结果 */
+.result-head{position:relative;padding-right:92px;padding-bottom:16px;border-bottom:1px solid var(--line)}
+.stamp{
+  position:absolute;right:0;top:2px;width:86px;height:86px;border-radius:50%;
+  border:2.5px solid var(--accent);outline:1px solid var(--accent);outline-offset:-7px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;
+  color:var(--accent);font-family:var(--kai);font-size:12px;line-height:1.2;
+  transform:rotate(-11deg);opacity:.9;mix-blend-mode:multiply;
+  animation:stampIn .46s cubic-bezier(.2,.9,.3,1.5) both;
+}
+@keyframes stampIn{
+  0%{opacity:0;transform:rotate(-4deg) scale(1.9)}
+  60%{opacity:1;transform:rotate(-13deg) scale(.94)}
+  100%{opacity:.9;transform:rotate(-11deg) scale(1)}
+}
+.result-head .qnum{margin:0 0 4px}
+.res-name{font-family:var(--serif);font-weight:700;font-size:clamp(24px,6.4vw,36px);line-height:1.3;letter-spacing:-.02em;margin:0}
+.res-sub{font-family:var(--kai);font-size:14.5px;color:var(--accent-2);margin:5px 0 0;letter-spacing:.03em}
+.scoreline{display:flex;align-items:baseline;gap:7px;margin:12px 0 0}
+.score-big{font-family:var(--serif);font-weight:700;font-size:46px;line-height:1;letter-spacing:-.03em}
+.score-big em{font-style:normal;font-size:22px;margin-left:1px}
+.scoreunit{font-family:var(--hei);font-size:12.5px;color:var(--ink-2);letter-spacing:.06em}
+.persona{
+  font-family:var(--kai);font-size:15.5px;line-height:1.72;margin:20px 0 0;
+  padding:12px 0 0;border-top:1px dashed var(--line);
+}
+.read{font-family:var(--serif);font-size:15px;line-height:1.86;margin:14px 0 0;color:#2B2E22}
+.blocktitle{
+  font-family:var(--hei);font-size:12.5px;font-weight:600;color:var(--ink-2);
+  letter-spacing:.14em;margin:24px 0 8px;padding-bottom:6px;border-bottom:1px solid var(--line);
+}
+.path{margin:0}
+.path li{display:flex;gap:9px;align-items:flex-start;margin:0 0 9px;list-style:none}
+.path li b{
+  flex:0 0 auto;font-family:var(--hei);font-size:11px;font-weight:600;color:var(--accent);
+  border:1px solid var(--accent);padding:1px 5px;line-height:1.6;margin-top:3px;white-space:nowrap;
+}
+.path li p{margin:0;font-family:var(--serif);font-size:14.5px;line-height:1.65}
+.bars{margin-top:4px}
+.bar-row{display:grid;grid-template-columns:104px 1fr 34px;align-items:center;gap:10px;margin-bottom:9px}
+.bar-row .n{font-family:var(--serif);font-size:13px;color:var(--ink-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bar-row .track{height:9px;background:#E4E0D1;position:relative}
+.bar-row .track i{position:absolute;left:0;top:0;bottom:0;background:var(--accent);width:0;transition:width .55s ease}
+.bar-row .v{font-family:var(--serif);font-size:12.5px;color:var(--ink-2);text-align:right}
+.note{border-top:1px dashed var(--line);padding-top:11px;margin-top:15px}
+.note h3{font-family:var(--kai);font-size:13.5px;margin:0 0 3px;letter-spacing:.1em;color:var(--accent)}
+.note p{font-family:var(--kai);font-size:14.5px;line-height:1.72;margin:0}
+.note.dont h3{color:var(--ink-2)}
+.acts{display:grid;grid-template-columns:1fr;gap:10px;margin-top:26px}
+@media(min-width:560px){.acts{grid-template-columns:1fr 1fr}}
+.more{
+  display:block;width:100%;margin-top:16px;padding:11px 0;min-height:44px;
+  background:transparent;border:0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+  font-family:var(--kai);font-size:13.5px;color:var(--ink-2);letter-spacing:.08em;cursor:pointer;
+}
+.more:hover{color:var(--ink)}
+.allres{display:none}
+.allres.open{display:block;margin-top:2px}
+.allres dl{margin:0}
+.allres dt{
+  display:flex;align-items:baseline;gap:10px;
+  font-family:var(--serif);font-size:14px;padding:9px 0 3px;border-top:1px dotted var(--line);
+}
+.allres dt b{font-size:11px;letter-spacing:.06em;font-weight:700;color:var(--ink-2);border:1px solid var(--line);padding:0 4px}
+.allres dd{margin:0 0 8px;font-family:var(--kai);font-size:13.5px;color:var(--ink-2);line-height:1.6}
+.allres dt.hit b{border-color:var(--accent);color:var(--accent)}
+.allres dt.hit span{color:var(--accent)}
+.toast{
+  position:fixed;left:50%;bottom:26px;transform:translate(-50%,14px);
+  background:var(--ink);color:#F7F5EE;font-size:13.5px;letter-spacing:.04em;
+  padding:10px 16px;border-radius:2px;opacity:0;pointer-events:none;
+  transition:opacity .2s ease,transform .2s ease;z-index:9;max-width:86vw;text-align:center;
+}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+
+@media(min-width:768px){
+  body{padding:34px 24px 64px}
+  .sheet{padding:30px 30px 34px 64px}
+  .seal{display:flex;position:absolute;left:0;top:26px;bottom:26px;width:44px;
+    border-right:1px dashed #C2BEAD;align-items:center;justify-content:center}
+  .seal span{writing-mode:vertical-rl;font-family:var(--kai);font-size:12.5px;
+    letter-spacing:.34em;color:#A3A08F;padding-left:4px}
+  .result-head{padding-right:118px}
+  .stamp{width:104px;height:104px;font-size:13px}
+}
+</style>
+</head>
+<body>
+<main class="sheet">
+  <aside class="seal" aria-hidden="true"><span>密封线内　不要答题</span></aside>
+
+  <!-- ===== 视图：首页 ===== -->
+  <section class="screen is-on" id="screenHome">
+    <div class="meta"><span>天赋科 · 选择性试题（2026 版）</span><span>共 32 题　10 类方向</span></div>
+    <div class="fields">
+      <span class="field">姓名<i class="blank"></i></span>
+      <span class="field">用时<i class="blank"></i></span>
+    </div>
+
+    <h1>测一测，<br><span class="mark">你的天赋藏在哪个方向</span></h1>
+    <p class="sub">32 个生活小场面，测出你最适合走的路</p>
+
+    <div class="sell">
+      <div class="card">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10.4"/><path d="M6.6 12.4 10.4 16.2 17.6 8.4"/></svg>
+        <p><b>天赋雷达</b><span class="sep">｜</span>你最自然的能力是什么</p>
+      </div>
+      <div class="card">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10.4"/><path d="M6.6 12.4 10.4 16.2 17.6 8.4"/></svg>
+        <p><b>工作方式</b><span class="sep">｜</span>什么节奏你才干得不累</p>
+      </div>
+      <div class="card">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10.4"/><path d="M6.6 12.4 10.4 16.2 17.6 8.4"/></svg>
+        <p><b>方向匹配</b><span class="sep">｜</span>十类方向，哪类最像你</p>
+      </div>
+      <div class="card">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10.4"/><path d="M6.6 12.4 10.4 16.2 17.6 8.4"/></svg>
+        <p><b>避坑提醒</b><span class="sep">｜</span>别把天赋用错了地方</p>
+      </div>
+    </div>
+
+    <button class="btn-primary" id="startBtn">点击测试 →</button>
+    <p class="tiny">趣味测试仅供自我认识参考<br>不构成职业规划或专业测评建议</p>
+  </section>
+
+  <!-- ===== 视图：答题 ===== -->
+  <section class="screen" id="screenQuiz">
+    <div class="quiz-top">
+      <span class="qmeta" id="qmeta">01 / 32</span>
+      <div class="dots" id="dots" aria-hidden="true"></div>
+    </div>
+    <div class="bar-line"><i id="progress"></i></div>
+    <p class="qnum" id="qnum">第 01 题　·　单选</p>
+    <h2 class="stem" id="stem"></h2>
+    <div class="opts" id="opts"></div>
+    <div class="nav">
+      <button class="btn-ghost" id="prevBtn">上一题</button>
+      <span class="hint">选第一反应，别挑“应该”的</span>
+    </div>
+  </section>
+
+  <!-- ===== 视图：批卷结果 ===== -->
+  <section class="screen" id="screenResult">
+    <div class="result-head">
+      <div class="stamp" aria-hidden="true"><span>仅供娱乐</span><span>天赋科</span></div>
+      <p class="qnum">批卷结果　·　本卷已阅</p>
+      <h2 class="res-name" id="rname"></h2>
+      <p class="res-sub" id="rsub"></p>
+      <div class="scoreline"><span class="score-big" id="rscore"></span><span class="scoreunit">天赋浓度</span></div>
+    </div>
+
+    <p class="persona" id="rpersona"></p>
+    <p class="read" id="rread"></p>
+
+    <h3 class="blocktitle">可以往这些方向走</h3>
+    <ul class="path" id="rpath"></ul>
+
+    <h3 class="blocktitle">天赋分布</h3>
+    <div class="bars" id="rbars"></div>
+
+    <div class="note"><h3>怎么发挥</h3><p id="rdo"></p></div>
+    <div class="note dont"><h3>要避开</h3><p id="rdont"></p></div>
+
+    <div class="acts">
+      <button class="btn-primary" id="copyBtn">复制结果文案</button>
+      <button class="btn-ghost" id="againBtn">再答一次</button>
+    </div>
+
+    <button class="more" id="moreBtn" aria-expanded="false">查看全部 10 类天赋</button>
+    <div class="allres" id="allres"></div>
+
+    <p class="tiny">趣味测试仅供自我认识参考<br>不构成职业规划或专业测评建议</p>
+  </section>
+</main>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+/* ================= 题库（32 题） ================= */
+var Q = [
+{t:"小组作业要交一份汇报，你最先被推去做的部分",o:[["讲 PPT、写串词，把大家的意思说清楚","t1"],["算数据、排逻辑，把结论做扎实","t2"],["定主题、想创意，让汇报不像模板","t3"],["协调组员，看谁有空、谁适合干什么","t4"]]},
+{t:"一件东西坏了，你的第一反应是",o:[["翻说明书，查保修和条款","t8"],["找谁负责，走什么流程报修","t6"],["先判断值不值得修，还是换个好看的","t7"],["直接拆开看看能不能修好","t5"]]},
+{t:"刷到一个完全陌生的行业，你会",o:[["顺着搜下去，看它到底怎么运转","t9"],["想“这个要学多久才能上手”","t10"],["想怎么把它讲给别人听","t1"],["想它的成本、链条和数字","t2"]]},
+{t:"班级或社团要办一场活动，你最想接的活是",o:[["排期、分工、盯进度","t6"],["主题和玩法，怎么才好玩","t3"],["接待和氛围，别让人尴尬","t4"],["场地物料、现场设备这些实活","t5"]]},
+{t:"你收拾房间时，最花时间的是",o:[["摆得好看、颜色怎么搭","t7"],["分类、贴标签、定好位置","t8"],["翻出旧东西，一看就是半小时","t9"],["把该修的修好、该洗的洗完","t10"]]},
+{t:"别人最常夸你的一句是",o:[["“你说得真清楚”","t1"],["“你想得真明白”","t2"],["“你怎么想到的”","t3"],["“跟你待着很舒服”","t4"]]},
+{t:"如果选一份兼职，你更愿意做",o:[["装设备、布展、动手类","t5"],["带小队、跑流程、协调类","t6"],["拍照、剪片、做图","t7"],["整理资料、对表格、核数字","t8"]]},
+{t:"面对一个完全不会的软件，你会",o:[["从基础教程一节一节看完","t10"],["到处点，试出它的逻辑","t9"],["找个人问，顺便把对方讲明白","t1"],["先想它底层是怎么设计的","t2"]]},
+{t:"朋友说“我最近很迷茫”，你会先",o:[["帮他想几条从没想过的路","t3"],["先陪他把情绪捋顺","t4"],["把眼前能做的事列出来，先动起来","t5"],["帮他把时间排出来，定个小目标","t6"]]},
+{t:"你手机里最舍不得删的是",o:[["拍的照片和收藏的图","t7"],["各种清单、记录、备份","t8"],["收藏的科普和冷知识","t9"],["用了很多年的笔记和作品","t10"]]},
+{t:"看完一部电影，你最想做的事是",o:[["写一段感受发出去","t1"],["分析它为什么好看或不好看","t2"],["想自己拍一个类似的","t3"],["找看过的人聊一晚上","t4"]]},
+{t:"让你最有成就感的一刻是",o:[["亲手把东西做出来或修好","t5"],["一场活动被自己推成了","t6"],["一个作品被人说“好看”","t7"],["一堆乱账被自己理清了","t8"]]},
+{t:"学新东西时，你最享受的是",o:[["能马上讲给别人听","t1"],["搞懂它的原理","t2"],["发现它和别的东西的关联","t9"],["每天进步一点，越练越稳","t10"]]},
+{t:"你更受不了哪种工作状态",o:[["没人拍板，事情一直拖着","t6"],["重复、没有新东西","t3"],["没人交流，各干各的","t4"],["只开会不动手","t5"]]},
+{t:"逛街时你最先被什么吸引",o:[["店面的陈列和质感","t7"],["价格、规格、参数对比","t8"],["没见过的新奇玩意","t9"],["做工好不好、能用多久","t10"]]},
+{t:"一场讨论卡住了，你通常会",o:[["找出卡住的真正原因","t2"],["用一句话把分歧说清楚","t1"],["提一个没人想过的方案","t3"],["先让气氛缓下来，再谈事","t4"]]},
+{t:"要交一份大作业，你的做法是",o:[["先做出个能跑的版本","t5"],["拆任务、定节点、盯人","t6"],["先把呈现做得好看","t7"],["先把要求和评分标准逐条对齐","t8"]]},
+{t:"一份工作最吸引你的是",o:[["能一直接触新东西","t9"],["能深耕成一门手艺","t10"],["能表达、能影响人","t1"],["能解决复杂问题","t2"]]},
+{t:"你最适合在团队里当哪种角色",o:[["出主意的人","t3"],["安抚情绪的人","t4"],["解决具体问题的人","t5"],["把大家组织起来的人","t6"]]},
+{t:"你的桌面最能说明你的一点是",o:[["摆的东西有讲究","t7"],["分门别类，位置固定","t8"],["摊着三四个没做完的项目","t9"],["只有一两样用了很久的东西","t10"]]},
+{t:"朋友吵架找你评理，你会",o:[["帮他们把话说清楚","t1"],["摆事实，讲谁有理","t2"],["给个台阶，换个角度看","t3"],["先让他们各自冷静","t4"]]},
+{t:"你觉得最难被替代的能力是",o:[["把人和事串起来","t6"],["手上的技术","t5"],["审美和品味","t7"],["严谨和靠谱","t8"]]},
+{t:"你更想成为哪种人",o:[["什么都懂一点的杂家","t9"],["一件事做到极致的专家","t10"],["说话有人听的人","t1"],["想得比别人深的人","t2"]]},
+{t:"接到一个完全没做过的任务，你先",o:[["想一个新玩法","t3"],["问清楚对方到底要什么","t4"],["做个小样试试","t5"],["列清单、约人、定时间","t6"]]},
+{t:"你对“好看”的敏感度",o:[["一眼就看出哪里不对","t7"],["有标准，不达标就是不行","t8"],["更喜欢奇怪、没见过的东西","t9"],["更在意耐不耐用","t10"]]},
+{t:"你最怕别人说你",o:[["“说不明白”","t1"],["“想得太浅”","t2"],["“没想法”","t3"],["“太冷漠”","t4"]]},
+{t:"一个人做项目时，你最容易",o:[["直接动手，边做边改","t5"],["先把分工和进度排好","t6"],["卡在细节好不好看","t7"],["卡在流程规不规范","t8"]]},
+{t:"你更愿意花两小时在",o:[["看一部纪录片","t9"],["练一项技能","t10"],["写一篇东西","t1"],["解一道难题","t2"]]},
+{t:"别人眼中的你，最可能是",o:[["脑子里总有新东西的人","t3"],["会照顾人的人","t4"],["什么都能修的人","t5"],["能把事办成的人","t6"]]},
+{t:"你整理一份资料时最在意",o:[["排版好不好看","t7"],["分类清不清楚","t8"],["有没有漏掉有意思的部分","t9"],["内容扎不扎实","t10"]]},
+{t:"如果只能选一个能力变强",o:[["表达","t1"],["逻辑","t2"],["组织","t6"],["审美","t7"]]},
+{t:"你最想在工作中得到",o:[["自由发挥的空间","t3"],["被需要的感觉","t4"],["稳定清晰的环境","t8"],["不断学习的机会","t9"]]}
+];
+
+/* ================= 结果池（10 类天赋） ================= */
+const RES = {
+t1:{name:'语言表达型',sub:'复杂的事，到你这儿就清楚了',
+ persona:'你天生会把“说不清”翻译成“听得懂”。',
+ read:'别人脑子里是一团毛线，你一开口就把它绕成了球。你擅长抓重点、讲人话、带节奏，也容易在沉默的时候被低估——因为你的能力要到输出那一刻才显形。',
+ dirs:[['内容与传播','文案、编辑、新媒体运营、品牌公关'],['表达与影响','讲师、培训、主持、销售、直播'],['连接类','咨询、策划、社群运营、商务沟通']],
+ do:'找一个能持续输出的场（写、讲、拍），让你的能力被看见。',
+ dont:'别只停在“说”，也要落一两个能拿出手的作品。'},
+
+t2:{name:'结构逻辑型',sub:'你看见的不是乱，是还没被理清的规律',
+ persona:'你天生想把事情“搞明白”，而不只是“搞定”。',
+ read:'你擅长拆问题、找因果、算清楚。别人凭感觉的时候，你在找依据。你的短板通常不是能力，而是解释的耐心——你已经想完了，别人还在第一层。',
+ dirs:[['数据与技术','数据分析、算法、开发、测试、运维'],['分析与风控','行业研究、财务分析、审计、策略'],['解决问题','咨询顾问、产品策略、系统设计']],
+ do:'把结论翻译成一句人话，你的价值会被放大一倍。',
+ dont:'别把“这很明显”当成不用解释，多数人不觉得明显。'},
+
+t3:{name:'创意发想型',sub:'别人在找答案，你在造选项',
+ persona:'你脑子里的窗口永远比别人的多。',
+ read:'你擅长从零想出可能，也擅长把一个普通东西重新包装。你容易被新想法点燃，但常常在“做出来”这一步掉队——不是不会，是下一个点子又来了。',
+ dirs:[['内容创作','短视频、插画、编剧、新媒体内容'],['产品与设计','创意策划、概念设计、广告创意'],['文化类','展览策划、IP 内容、活动创意']],
+ do:'一次只留一个正在做的，其余的写下来存着。',
+ dont:'别用“新的更好”逃开手上还没做完的那个。'},
+
+t4:{name:'共情连接型',sub:'你总能接到别人没说出口的那句',
+ persona:'你天生能读懂气氛，也容易被气氛消耗。',
+ read:'你对情绪敏感，会记得谁今天不太对。你擅长让人放松、把关系托住，是团队里的隐形黏合剂。代价是：你太容易把别人的情绪当成自己的责任。',
+ dirs:[['人与人','教育、心理、人力资源、社会工作'],['服务体验','客户成功、医护、文旅与餐饮服务'],['协作类','项目协调、社区运营、用户运营']],
+ do:'学会给情绪划边界，才能长期做跟人有关的工作。',
+ dont:'别把“我来照顾大家”设成默认状态，你也会累。'},
+
+t5:{name:'动手实践型',sub:'别人还在讨论，你已经上手了',
+ persona:'你相信“能摸到的东西才是真的”。',
+ read:'你动手能力强，喜欢边做边改，讨厌空谈。你学东西靠试，不靠背。你的优势是落地快，短板是不爱复盘——所以经验有时留不住。',
+ dirs:[['技术与工程','机械、电子、设备调试、工程实施'],['制作与工艺','印刷包装、手作、影像制作、维修'],['实操服务','现场执行、安装调试、实验技术']],
+ do:'给每次动手留一条记录，经验才会变成能力。',
+ dont:'别嫌流程麻烦，它是让你少返工的那一半。'},
+
+t6:{name:'组织推进型',sub:'事没人推，你会先把它推起来',
+ persona:'你天然受不了“事情悬着”。',
+ read:'你擅长把人、时间、资源串起来，敢拍板、能盯进度。你在混乱里反而清醒。但要小心：容易默认所有人都跟你有一样的推进力。',
+ dirs:[['管理与统筹','项目管理、运营、活动执行、赛事运营'],['商业类','商务拓展、供应链、门店管理'],['公共事务','行政、组织协调、会务统筹']],
+ do:'多问一句“你怎么想”，阻力会少一半。',
+ dont:'别把“我这是为效率”当成可以忽略别人的理由。'},
+
+t7:{name:'审美感知型',sub:'你说不出为什么，但就是不对',
+ persona:'你对质感、比例、氛围有天生的判断。',
+ read:'你能一眼看出哪里差一点，也愿意为一个细节来回折腾。你的能力很难被量化，但在结果上特别明显。风险是：容易被“还不够好”困住。',
+ dirs:[['视觉类','平面设计、摄影、剪辑、UI 设计'],['空间与产品','室内、展陈、工业设计、服装'],['内容美学','品牌视觉、包装设计、社媒视觉']],
+ do:'给自己设一个交付时间，先交出去再优化。',
+ dont:'别用完美主义拖住发布，完成比完美先到。'},
+
+t8:{name:'秩序守护型',sub:'你走到哪，混乱就自动排队',
+ persona:'你靠“准确”获得安全感。',
+ read:'你擅长定规则、对细节、查漏洞，是那种“交给你就放心”的人。你不喜欢惊喜，喜欢可预期。别人可能觉得你较真，但出事时最先被找的就是你。',
+ dirs:[['规则与风险','法务、审计、合规、质量管理'],['数字与账目','财务、会计、数据核对'],['流程类','运营支持、档案管理、供应链计划']],
+ do:'把“标准”讲成“为什么这样更省事”，别人才愿意跟。',
+ dont:'别把“没按流程”直接等于“不认真”，有时是别人找到了更好的路。'},
+
+t9:{name:'探索好奇型',sub:'你不是三分钟热度，你是天生的探测器',
+ persona:'你对世界保持着一种不肯熄火的好奇。',
+ read:'你学得快、连得上，能把八竿子打不着的东西串起来。你适合变化快的领域，但在需要长期枯燥积累的地方容易失速。',
+ dirs:[['新兴行业','互联网新业务、AI 应用、跨境电商'],['研究与科普','内容科普、行业研究、媒体选题'],['跨界类','产品探索、创新业务、选品买手']],
+ do:'每次探索留一个可交付的小结果，好奇才会变成资历。',
+ dont:'别用“我还在了解”拖住决定，了解的尽头还是了解。'},
+
+t10:{name:'深耕耐受型',sub:'你不抢眼，但你一直在长',
+ persona:'你信“慢的东西才留得住”。',
+ read:'你耐得住重复，愿意把一件事做到熟练。别人换赛道的时候你还在原地打磨，几年后你突然有了别人拿不走的东西。风险是：容易在错误的赛道上坚持太久。',
+ dirs:[['专业技能','技术深耕、手艺、医护、教育'],['精密与制造','工艺工程、质检、研发支持'],['长期服务','运维、法务助理、专业顾问']],
+ do:'每年问自己一次：这条赛道还值得我继续深耕吗。',
+ dont:'别把“我都坚持这么久了”当成继续的理由。'}
+};
+
+/* ================= 逻辑 ================= */
+const KEYS = ['t1','t2','t3','t4','t5','t6','t7','t8','t9','t10'];
+const PRIORITY = ['t6','t1','t9','t3','t4','t2','t5','t7','t8','t10'];
+const LETTER = ['A','B','C','D'];
+let answers = new Array(Q.length).fill(null);
+let qi = 0, lastKey = null, lastCounts = null;
+
+function $(id){ return document.getElementById(id); }
+function pad(n){ return (n < 10 ? '0' : '') + n; }
+function pageName(){
+  var h = location.hash.replace(/^#\/?/, '');
+  return h || 'home';
+}
+function go(p){ location.hash = '#/' + p; }
+
+function showScreen(name){
+  var map = {home:'screenHome', quiz:'screenQuiz', result:'screenResult'};
+  Object.keys(map).forEach(function(k){
+    $(map[k]).classList.toggle('is-on', k === name);
+  });
+  window.scrollTo(0, 0);
+}
+
+function route(){
+  var p = pageName();
+  if (p === 'quiz'){ showScreen('quiz'); renderQuiz(); }
+  else if (p === 'result'){
+    if (!lastKey){ go('quiz'); return; }
+    showScreen('result'); renderResult();
+  } else { showScreen('home'); }
+}
+window.addEventListener('hashchange', route);
+
+(function buildDots(){
+  var box = $('dots');
+  for (var i = 0; i < Q.length; i++){
+    var d = document.createElement('div');
+    d.className = 'dot';
+    box.appendChild(d);
+  }
+})();
+
+function paintDots(){
+  var cells = $('dots').children;
+  for (var i = 0; i < cells.length; i++){
+    cells[i].className = 'dot' + (answers[i] !== null ? ' on' : '') + (i === qi ? ' cur' : '');
+  }
+  var done = answers.filter(function(a){ return a !== null; }).length;
+  $('progress').style.width = (done / Q.length * 100).toFixed(1) + '%';
+}
+
+function renderQuiz(){
+  var cur = Q[qi];
+  $('qmeta').textContent = pad(qi + 1) + ' / ' + Q.length;
+  $('qnum').textContent = '第 ' + pad(qi + 1) + ' 题　·　单选';
+  $('stem').textContent = cur.t;
+
+  var box = $('opts');
+  box.innerHTML = '';
+  cur.o.forEach(function(o, i){
+    var b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'opt' + (answers[qi] === i ? ' sel' : '');
+    var k = document.createElement('span');
+    k.className = 'key';
+    k.textContent = LETTER[i];
+    var t = document.createElement('span');
+    t.className = 'lab';
+    t.textContent = o[0];
+    b.appendChild(k); b.appendChild(t);
+    b.addEventListener('click', function(){ pick(i); });
+    box.appendChild(b);
+  });
+
+  $('prevBtn').disabled = (qi === 0);
+  paintDots();
+}
+
+function pick(i){
+  answers[qi] = i;
+  var btns = $('opts').querySelectorAll('.opt');
+  for (var n = 0; n < btns.length; n++){
+    btns[n].classList.toggle('sel', n === i);
+  }
+  paintDots();
+
+  window.setTimeout(function(){
+    if (qi < Q.length - 1){
+      qi += 1;
+      renderQuiz();
+      window.scrollTo(0, 0);
+    } else {
+      finish();
+    }
+  }, 280);
+}
+
+$('prevBtn').addEventListener('click', function(){
+  if (qi > 0){ qi -= 1; renderQuiz(); }
+});
+
+$('startBtn').addEventListener('click', function(){
+  qi = 0;
+  answers = new Array(Q.length).fill(null);
+  lastKey = null;
+  go('quiz');
+});
+
+function finish(){
+  var counts = {};
+  KEYS.forEach(function(k){ counts[k] = 0; });
+  answers.forEach(function(v, idx){
+    if (v !== null && Q[idx]) counts[Q[idx].o[v][1]] += 1;
+  });
+
+  var best = null;
+  KEYS.forEach(function(k){ if (!best || counts[k] > counts[best]) best = k; });
+  var ties = KEYS.filter(function(k){ return counts[k] === counts[best]; });
+  if (ties.length > 1){
+    var tail = Q[Q.length - 1].o[answers[answers.length - 1]][1];
+    best = ties.indexOf(tail) > -1 ? tail : PRIORITY.filter(function(k){ return ties.indexOf(k) > -1; })[0];
+  }
+
+  lastKey = best;
+  lastCounts = counts;
+  go('result');
+}
+
+function renderResult(){
+  var r = RES[lastKey];
+
+  $('rname').textContent = r.name;
+  $('rsub').textContent = r.sub;
+  $('rpersona').textContent = r.persona;
+  $('rread').textContent = r.read;
+  $('rdo').textContent = r.do;
+  $('rdont').textContent = r.dont;
+
+  var pct = Math.round(lastCounts[lastKey] / Q.length * 100);
+  $('rscore').innerHTML = pct + '<em>%</em>';
+
+  var path = $('rpath');
+  path.innerHTML = '';
+  r.dirs.forEach(function(d){
+    var li = document.createElement('li');
+    var b = document.createElement('b');
+    b.textContent = d[0];
+    var p = document.createElement('p');
+    p.textContent = d[1];
+    li.appendChild(b); li.appendChild(p);
+    path.appendChild(li);
+  });
+
+  var bars = $('rbars');
+  bars.innerHTML = '';
+  var top = KEYS.map(function(k){ return {k: k, v: lastCounts[k]}; })
+    .sort(function(a, b){ return b.v - a.v; }).slice(0, 3);
+  var max = Math.max(1, top[0].v);
+  top.forEach(function(item){
+    var row = document.createElement('div');
+    row.className = 'bar-row';
+    var n = document.createElement('span'); n.className = 'n';
+    n.textContent = RES[item.k].name;
+    var track = document.createElement('span'); track.className = 'track';
+    var fill = document.createElement('i');
+    track.appendChild(fill);
+    var v = document.createElement('span'); v.className = 'v';
+    v.textContent = item.v + '/' + Q.length;
+    row.appendChild(n); row.appendChild(track); row.appendChild(v);
+    bars.appendChild(row);
+    window.requestAnimationFrame(function(){
+      fill.style.width = (item.v / max * 100) + '%';
+    });
+  });
+
+  var all = $('allres');
+  if (!all.childElementCount){
+    var dl = document.createElement('dl');
+    KEYS.forEach(function(k, idx){
+      var dt = document.createElement('dt');
+      dt.setAttribute('data-k', k);
+      var b = document.createElement('b'); b.textContent = pad(idx + 1);
+      var s = document.createElement('span'); s.textContent = RES[k].name;
+      dt.appendChild(b); dt.appendChild(s);
+      var dd = document.createElement('dd');
+      dd.textContent = RES[k].sub;
+      dl.appendChild(dt); dl.appendChild(dd);
+    });
+    all.appendChild(dl);
+  }
+  var items = all.querySelectorAll('dt');
+  for (var n = 0; n < items.length; n++){
+    items[n].classList.toggle('hit', items[n].getAttribute('data-k') === lastKey);
+  }
+}
+
+$('againBtn').addEventListener('click', function(){
+  qi = 0;
+  answers = new Array(Q.length).fill(null);
+  lastKey = null;
+  go('quiz');
+});
+
+function toast(msg){
+  var t = $('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  window.clearTimeout(toast._timer);
+  toast._timer = window.setTimeout(function(){ t.classList.remove('show'); }, 2200);
+}
+
+$('copyBtn').addEventListener('click', function(){
+  var r = RES[lastKey];
+  var pct = Math.round(lastCounts[lastKey] / Q.length * 100);
+  var text = '测一测，你的天赋藏在哪个方向\n'
+    + '我的天赋是「' + r.name + '」' + r.sub + '，天赋浓度 ' + pct + '%。\n'
+    + '你偏向哪一类？\n#天赋测试 #职业方向 #自我认识 #找工作';
+  function done(){ toast('已复制，去发小红书吧'); }
+  if (navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(done, fallback);
+  } else { fallback(); }
+  function fallback(){
+    var ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    try{ document.execCommand('copy'); done(); }
+    catch(e){ toast('复制失败，请手动长按选择'); }
+    document.body.removeChild(ta);
+  }
+});
+
+$('moreBtn').addEventListener('click', function(){
+  var open = $('allres').classList.toggle('open');
+  this.setAttribute('aria-expanded', open ? 'true' : 'false');
+  this.textContent = open ? '收起全部 10 类天赋' : '查看全部 10 类天赋';
+});
+
+/* 键盘：1-4 / A-D */
+document.addEventListener('keydown', function(e){
+  if (pageName() !== 'quiz') return;
+  var k = e.key.toUpperCase();
+  var i = LETTER.indexOf(k);
+  if (i < 0 && ['1','2','3','4'].indexOf(k) > -1) i = ['1','2','3','4'].indexOf(k);
+  if (i > -1 && Q[qi].o[i]) pick(i);
+});
+
+route();
+</script>
+</body>
+</html>
